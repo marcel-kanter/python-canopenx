@@ -4,6 +4,8 @@ import mock
 import time
 import unittest
 
+from canopenx.node import Node
+
 
 class NetworkTestCase(unittest.TestCase):
 	def test_connect(self):
@@ -25,6 +27,55 @@ class NetworkTestCase(unittest.TestCase):
 		self.assertIsNone(network.bus)
 
 		bus.shutdown()
+
+	def test_collection(self):
+		network = canopenx.Network()
+
+		# Node without name
+		node1 = Node(1)
+
+		self.assertEqual(len(network), 0)
+		self.assertFalse(node1.id in network)
+
+		network.add(node1)
+		self.assertEqual(len(network), 1)
+		self.assertIs(network[1], node1)
+
+		node2 = Node(2)
+
+		network.add(node2)
+		self.assertEqual(len(network), 2)
+		self.assertIs(network[2], node2)
+
+		node3 = Node(3, "C")
+
+		network.add(node3)
+		self.assertEqual(len(network), 3)
+		self.assertIs(network[3], node3)
+		self.assertIs(network["C"], node3)
+
+		# Test the iterator - it shall iter over all nodes
+		count = 0
+		for node in network:
+			self.assertTrue(node.id in network)
+			count += 1
+		self.assertEqual(count, len(network))
+
+		with self.assertRaises(KeyError):
+			del network[node1.name]
+
+		del network[node1.id]
+		self.assertEqual(len(network), 2)
+		self.assertFalse(node1.id in network)
+
+		del network[node2.id]
+		self.assertEqual(len(network), 1)
+		self.assertFalse(node2.id in network)
+
+		del network[node3.name]
+		self.assertEqual(len(network), 0)
+		self.assertFalse(node3.id in network)
+		self.assertFalse(node3.name in network)
 
 	def test_message_passing(self):
 		bus1 = can.Bus(bustype = "virtual", channel = 0)

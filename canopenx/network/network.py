@@ -2,15 +2,87 @@ import can
 
 
 class Network(object):
-	__slots__ = ["_bus", "_listeners", "_notifier", "_subscribers"]
+	__slots__ = ["_bus", "_listeners", "_nodes_id", "_nodes_name", "_notifier", "_subscribers"]
+
+	def __contains__(self, key):
+		""" Returns True if the network contains a node with the specified node id
+
+		:param key: The node id to look for
+
+		:returns: True if a node is in the network with the given node id
+		"""
+		try:
+			self[key]
+		except:
+			return False
+		else:
+			return True
+
+	def __delitem__(self, key):
+		""" Removes a node identified by a node id from the network.
+		Raises KeyError if there is no node in the network with the given node id.
+
+		:param key: The name or identifier of the node to remove
+
+		:raises: KeyError
+		"""
+		node = self[key]
+
+		del self._nodes_id[node.id]
+		if node.name is not None:
+			del self._nodes_name[node.name]
+
+	def __getitem__(self, key):
+		""" Returns the node identified by the node id.
+		Raises KeyError if there is no node in the network with the given node id.
+
+		:param key: The node id to look for
+
+		:returns: A ``Node`` object
+
+		:raises: KeyError
+		"""
+		try:
+			return self._nodes_id[key]
+		except KeyError:
+			return self._nodes_name[key]
 
 	def __init__(self):
 		""" Initialises a ``Network``
 		"""
 		self._bus = None
 		self._subscribers = {}
+		self._nodes_id = {}
+		self._nodes_name = {}
 		self._notifier = None
 		self._listeners = [MessageListener(self)]
+
+	def __iter__(self):
+		""" Returns an iterator over all nodes in the network.
+		"""
+		return iter(self._nodes_id.values())
+
+	def __len__(self):
+		""" Returns the number of nodes in the network.
+		"""
+		return len(self._nodes_id)
+
+	def add(self, node):
+		""" Adds a node to the network. It may be accessed later by the node id.
+		Raises ValueError if a node with the node id is already in the network.
+
+		:param node: The node to add
+
+		:raises: ValueError
+		"""
+		if node.id in self._nodes_id:
+			raise ValueError("A node with this id is already in the network.")
+		if node.name is not None and node.name in self._nodes_name:
+			raise ValueError("A node with this name is already in the network.")
+
+		self._nodes_id[node.id] = node
+		if node.name is not None:
+			self._nodes_name[node.name] = node
 
 	@property
 	def bus(self):
