@@ -51,6 +51,19 @@ class Network(object):
 		except KeyError:
 			return
 
+	def send(self, message):
+		""" Sends a CAN message on the CAN bus.
+		Raises RuntimeError if the network is not connected to a bus.
+
+		:param message: The message to send.
+
+		:raises: RuntimeError
+		"""
+		if not self.is_connected():
+			raise RuntimeError("The network is not connected to a CAN bus.")
+
+		self._bus.send(message)
+
 	def subscribe(self, message_id, callback):
 		""" Subscribe to a message id. For each message id multiple differend callbacks are allowed.
 		A ValueError is raised if the callback is already registered for the specified message id.

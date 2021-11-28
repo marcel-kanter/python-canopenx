@@ -123,6 +123,27 @@ class NetworkTestCase(unittest.TestCase):
 		bus1.shutdown()
 		bus2.shutdown()
 
+	def test_send(self):
+		bus1 = can.Bus(bustype = "virtual", channel = 0)
+		bus2 = can.Bus(bustype = "virtual", channel = 0)
+
+		network = canopenx.Network()
+
+		#### Test step: Send on detached bus
+		with self.assertRaises(RuntimeError):
+			network.send(can.Message(arbitration_id = 0x00, dlc = 0))
+
+		#### Test step: Send message and receive on other bus
+		network.connect(bus1)
+
+		message_send = can.Message(arbitration_id = 0x100, is_extended_id = False, data = b"\x11\x22\x33\x44")
+		network.send(message_send)
+
+		message_recv = bus2.recv()
+		self.assertEqual(message_recv.arbitration_id, message_send.arbitration_id)
+		self.assertEqual(message_recv.is_extended_id, message_send.is_extended_id)
+		self.assertEqual(message_recv.data, message_send.data)
+
 	def test_subscribe(self):
 		network = canopenx.Network()
 		callback1 = mock.Mock()
