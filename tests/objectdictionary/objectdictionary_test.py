@@ -1,8 +1,8 @@
 import canopenx
 import unittest
 
-from canopenx.objectdictionary import Variable
-from canopenx.objectdictionary import UNSIGNED32
+from canopenx.objectdictionary import Record, Variable
+from canopenx.objectdictionary import UNSIGNED8, UNSIGNED32
 
 
 class ObjectDictionaryTestCase(unittest.TestCase):
@@ -36,6 +36,19 @@ class ObjectDictionaryTestCase(unittest.TestCase):
 			self.assertTrue(a == b)
 			self.assertEqual(a == b, b == a)
 
+			a.add(Record("record", 0x300))
+			b.add(Record("record", 0x300))
+			self.assertTrue(a == b)
+			self.assertEqual(a == b, b == a)
+
+			b["record"].add(Variable("variable", 0x300, 0x00, UNSIGNED8))
+			self.assertFalse(a == b)
+			self.assertEqual(a == b, b == a)
+
+			a["record"].add(Variable("variable", 0x300, 0x00, UNSIGNED8))
+			self.assertTrue(a == b)
+			self.assertEqual(a == b, b == a)
+
 			b = canopenx.ObjectDictionary()
 			b.add(Variable("x", 0x100, 0x00, UNSIGNED32))
 			self.assertFalse(a == b)
@@ -53,3 +66,7 @@ class ObjectDictionaryTestCase(unittest.TestCase):
 		examinee.add(Variable("variable", 0x100, 0x00, UNSIGNED32))
 		self.assertTrue("variable" in examinee)
 		self.assertTrue(0x100 in examinee)
+
+		examinee.add(Record("record", 0x300))
+		self.assertTrue("record" in examinee)
+		self.assertTrue(0x300 in examinee)

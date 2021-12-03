@@ -1,3 +1,4 @@
+from .record import Record
 from .variable import Variable
 
 
@@ -54,9 +55,9 @@ class ObjectDictionary(object):
 	def add(self, item):
 		""" Adds an item to the object dictionary. It may be accessed later by the name or the index.
 
-		:param item: The item to add. Must be an Variable.
+		:param item: The item to add. Must be an Record or Variable.
 		"""
-		if not isinstance(item, Variable):
+		if not isinstance(item, (Record, Variable)):
 			raise TypeError("This type of item is not supported.")
 		if item.index in self._items_index or item.name in self._items_name:
 			raise ValueError("A item with this index or name is already in the object dictionary.")
