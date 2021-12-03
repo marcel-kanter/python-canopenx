@@ -32,7 +32,8 @@ class NetworkTestCase(unittest.TestCase):
 		network = canopenx.Network()
 
 		# Node without name
-		node1 = Node(1)
+		dictionary = canopenx.ObjectDictionary()
+		node1 = Node(1, dictionary)
 
 		self.assertEqual(len(network), 0)
 		self.assertFalse(node1.id in network)
@@ -44,14 +45,14 @@ class NetworkTestCase(unittest.TestCase):
 		self.assertTrue(node1.id in network)
 		self.assertTrue(node1.is_attached())
 
-		node2 = Node(2)
+		node2 = Node(2, dictionary)
 
 		network.add(node2)
 		self.assertEqual(len(network), 2)
 		self.assertIs(network[2], node2)
 		self.assertTrue(node2.is_attached())
 
-		node3 = Node(3, "C")
+		node3 = Node(3, dictionary, "C")
 
 		network.add(node3)
 		self.assertEqual(len(network), 3)
