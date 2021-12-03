@@ -2,12 +2,12 @@ import unittest
 from hypothesis import given, example, strategies as st
 
 from canopenx.objectdictionary import Array, Record, Variable
-from canopenx.objectdictionary import UNSIGNED32
+from canopenx.objectdictionary import BOOLEAN, UNSIGNED32
 
 
-class RecordTestCase(unittest.TestCase):
+class ArrayTestCase(unittest.TestCase):
 	def test_equals(self):
-		a = Record("record", 0x100)
+		a = Array("array", 0x100, UNSIGNED32)
 
 		with self.subTest("Reflexivity"):
 			self.assertTrue(a == a)
@@ -19,56 +19,57 @@ class RecordTestCase(unittest.TestCase):
 					self.assertFalse(a == value)
 
 		with self.subTest("Consistency"):
-			b = Record("record", 0x100)
+			b = Array("array", 0x100, UNSIGNED32)
 			for _ in range(3):
 				self.assertTrue(a == b)
 
 		with self.subTest("Symmetricality"):
-			b = Record("record", 0x100)
+			b = Array("array", 0x100, UNSIGNED32)
 			self.assertTrue(a == b)
 			self.assertEqual(a == b, b == a)
 
-			b = Record("x", 0x100, 0)
+			b = Array("x", 0x100, UNSIGNED32)
 			self.assertFalse(a == b)
 			self.assertEqual(a == b, b == a)
 
-			b = Record("record", 0x101, 0)
+			b = Array("array", 0x101, UNSIGNED32)
 			self.assertFalse(a == b)
 			self.assertEqual(a == b, b == a)
 
-			b = Record("record", 0x100, 1)
+			b = Array("array", 0x100, BOOLEAN)
 			self.assertFalse(a == b)
 			self.assertEqual(a == b, b == a)
 
-			b = Record("record", 0x100, 0)
+			b = Array("array", 0x100, UNSIGNED32)
 			b.add(Variable("variable", 0x100, 0x00, UNSIGNED32))
 			self.assertFalse(a == b)
 
 			a.add(Variable("variable", 0x100, 0x00, UNSIGNED32))
 			self.assertTrue(a == b)
 
-			b = Record("record", 0x100, 0)
+			b = Array("array", 0x100, UNSIGNED32)
 			b.add(Variable("x", 0x100, 0x00, UNSIGNED32))
 			self.assertFalse(a == b)
 
-	@given(name = st.just("record"), index = st.just(0x100), data_type = st.just(0), test_outcome = st.just("pass"))
-	@example(name = "record", index = -1, data_type = 0, test_outcome = "fail")
-	@example(name = "record", index = 0x100, data_type = -1, test_outcome = "fail")
+	@given(name = st.just("array"), index = st.just(0x100), data_type = st.just(0), test_outcome = st.just("pass"))
+	@example(name = "array", index = -1, data_type = 0, test_outcome = "fail")
+	@example(name = "array", index = 0x100, data_type = -1, test_outcome = "fail")
+	@example(name = "array", index = 0x100, data_type = 0x20, test_outcome = "fail")
 	def test_init(self, name, index, data_type, test_outcome):
 		if test_outcome == "pass":
-			Record(name, index, data_type)
+			Array(name, index, data_type)
 		else:
 			with self.assertRaises(ValueError):
-				Record(name, index, data_type)	
+				Array(name, index, data_type)	
 
 	def test_collection(self):
-		examinee = Record("record", 0x100)
+		examinee = Array("array", 0x100, UNSIGNED32)
+
+		with self.assertRaises(TypeError):
+			examinee.add(Array("x", 0x100, UNSIGNED32))
 
 		with self.assertRaises(TypeError):
 			examinee.add(Record("x", 0x100))
-
-		with self.assertRaises(TypeError):
-			examinee.add(Array("x", 0x100))
 
 		with self.assertRaises(ValueError):
 			examinee.add(Variable("variable", 0x111, 0x00, UNSIGNED32))
