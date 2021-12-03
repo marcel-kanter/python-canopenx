@@ -1,7 +1,7 @@
 import canopenx
 import unittest
 
-from canopenx.objectdictionary import Array, DefStruct, Domain, Record, Variable
+from canopenx.objectdictionary import Array, DefStruct, DefType, Domain, Record, Variable
 from canopenx.objectdictionary import UNSIGNED8, UNSIGNED32
 
 
@@ -95,6 +95,10 @@ class ObjectDictionaryTestCase(unittest.TestCase):
 		examinee.add(DefStruct("defstruct", 0x400))
 		self.assertTrue("defstruct" in examinee)
 		self.assertTrue(0x400 in examinee)
+
+		examinee.add(DefType("deftype", 0x600))
+		self.assertTrue("deftype" in examinee)
+		self.assertTrue(0x600 in examinee)
 
 		examinee.add(Domain("domain", 0x500))
 		self.assertTrue("domain" in examinee)
