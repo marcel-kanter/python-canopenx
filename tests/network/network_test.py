@@ -36,16 +36,20 @@ class NetworkTestCase(unittest.TestCase):
 
 		self.assertEqual(len(network), 0)
 		self.assertFalse(node1.id in network)
+		self.assertFalse(node1.is_attached())
 
 		network.add(node1)
 		self.assertEqual(len(network), 1)
 		self.assertIs(network[1], node1)
+		self.assertTrue(node1.id in network)
+		self.assertTrue(node1.is_attached())
 
 		node2 = Node(2)
 
 		network.add(node2)
 		self.assertEqual(len(network), 2)
 		self.assertIs(network[2], node2)
+		self.assertTrue(node2.is_attached())
 
 		node3 = Node(3, "C")
 
@@ -53,6 +57,7 @@ class NetworkTestCase(unittest.TestCase):
 		self.assertEqual(len(network), 3)
 		self.assertIs(network[3], node3)
 		self.assertIs(network["C"], node3)
+		self.assertTrue(node3.is_attached())
 
 		# Test the iterator - it shall iter over all nodes
 		count = 0
@@ -67,15 +72,18 @@ class NetworkTestCase(unittest.TestCase):
 		del network[node1.id]
 		self.assertEqual(len(network), 2)
 		self.assertFalse(node1.id in network)
+		self.assertFalse(node1.is_attached())
 
 		del network[node2.id]
 		self.assertEqual(len(network), 1)
 		self.assertFalse(node2.id in network)
+		self.assertFalse(node2.is_attached())
 
 		del network[node3.name]
 		self.assertEqual(len(network), 0)
 		self.assertFalse(node3.id in network)
 		self.assertFalse(node3.name in network)
+		self.assertFalse(node3.is_attached())
 
 	def test_message_passing(self):
 		bus1 = can.Bus(bustype = "virtual", channel = 0)

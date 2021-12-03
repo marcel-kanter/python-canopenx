@@ -1,5 +1,5 @@
 class Node(object):
-	__slots__ = ["_id", "_name"]
+	__slots__ = ["_id", "_name", "_network"]
 
 	def __eq__(self, other):
 		""" Indicates whether some other object is "equal to" this one.
@@ -24,11 +24,35 @@ class Node(object):
 			self._name = None
 		else:
 			self._name = str(name)
+		self._network = None
+
+	def attach(self, network):
+		""" Attach a Node to a Network. Detaches if the Node is already attached to a Network.
+
+		:param network: The Network to which the Node should be attached to.
+		"""
+		if self.is_attached():
+			self.detach()
+		self._network = network
+
+	def detach(self):
+		""" Detach the Node from a Network.
+		"""
+		self._network = None
 
 	@property
 	def id(self):
 		return self._id
 
+	def is_attached(self):
+		""" Returns True if the Node is attached to a Network.
+		"""
+		return self._network is not None
+
 	@property
 	def name(self):
 		return self._name
+
+	@property
+	def network(self):
+		return self._network

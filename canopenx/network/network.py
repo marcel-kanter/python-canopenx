@@ -27,6 +27,7 @@ class Network(object):
 		:raises: KeyError
 		"""
 		node = self[key]
+		node.detach()
 
 		del self._nodes_id[node.id]
 		if node.name is not None:
@@ -83,6 +84,8 @@ class Network(object):
 		self._nodes_id[node.id] = node
 		if node.name is not None:
 			self._nodes_name[node.name] = node
+
+		node.attach(self)
 
 	@property
 	def bus(self):
