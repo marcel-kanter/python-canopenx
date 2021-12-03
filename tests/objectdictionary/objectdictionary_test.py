@@ -1,7 +1,7 @@
 import canopenx
 import unittest
 
-from canopenx.objectdictionary import Array, Record, Variable
+from canopenx.objectdictionary import Array, DefStruct, Record, Variable
 from canopenx.objectdictionary import UNSIGNED8, UNSIGNED32
 
 
@@ -83,6 +83,10 @@ class ObjectDictionaryTestCase(unittest.TestCase):
 		examinee.add(Array("array", 0x200, UNSIGNED32))
 		self.assertTrue("array" in examinee)
 		self.assertTrue(0x200 in examinee)
+
+		examinee.add(DefStruct("defstruct", 0x400))
+		self.assertTrue("defstruct" in examinee)
+		self.assertTrue(0x400 in examinee)
 
 		examinee.add(Record("record", 0x300))
 		self.assertTrue("record" in examinee)

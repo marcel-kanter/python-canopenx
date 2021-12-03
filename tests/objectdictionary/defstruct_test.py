@@ -2,12 +2,12 @@ import unittest
 from hypothesis import given, example, strategies as st
 
 from canopenx.objectdictionary import Array, DefStruct, Record, Variable
-from canopenx.objectdictionary import UNSIGNED32
+from canopenx.objectdictionary import BOOLEAN, UNSIGNED8, UNSIGNED16, UNSIGNED32
 
 
-class RecordTestCase(unittest.TestCase):
+class DefStructTestCase(unittest.TestCase):
 	def test_equals(self):
-		a = Record("record", 0x100)
+		a = DefStruct("defstruct", 0x100)
 
 		with self.subTest("Reflexivity"):
 			self.assertTrue(a == a)
@@ -19,64 +19,65 @@ class RecordTestCase(unittest.TestCase):
 					self.assertFalse(a == value)
 
 		with self.subTest("Consistency"):
-			b = Record("record", 0x100)
+			b = DefStruct("defstruct", 0x100)
 			for _ in range(3):
 				self.assertTrue(a == b)
 
 		with self.subTest("Symmetricality"):
-			b = Record("record", 0x100)
+			b = DefStruct("defstruct", 0x100)
 			self.assertTrue(a == b)
 			self.assertEqual(a == b, b == a)
 
-			b = Record("x", 0x100, 0)
+			b = DefStruct("x", 0x100)
 			self.assertFalse(a == b)
 			self.assertEqual(a == b, b == a)
 
-			b = Record("record", 0x101, 0)
+			b = DefStruct("defstruct", 0x101)
 			self.assertFalse(a == b)
 			self.assertEqual(a == b, b == a)
 
-			b = Record("record", 0x100, 1)
-			self.assertFalse(a == b)
-			self.assertEqual(a == b, b == a)
-
-			b = Record("record", 0x100, 0)
-			b.add(Variable("variable", 0x100, 0x00, UNSIGNED32))
+			b = DefStruct("defstruct", 0x100)
+			b.add(Variable("variable", 0x100, 0x00, UNSIGNED8, "ro"))
 			self.assertFalse(a == b)
 
-			a.add(Variable("variable", 0x100, 0x00, UNSIGNED32))
+			a.add(Variable("variable", 0x100, 0x00, UNSIGNED8, "ro"))
 			self.assertTrue(a == b)
 
-			b = Record("record", 0x100, 0)
-			b.add(Variable("x", 0x100, 0x00, UNSIGNED32))
+			b = DefStruct("defstruct", 0x100)
+			b.add(Variable("x", 0x100, 0x00, UNSIGNED8, "ro"))
 			self.assertFalse(a == b)
 
-	@given(name = st.just("record"), index = st.just(0x100), data_type = st.just(0), test_outcome = st.just("pass"))
-	@example(name = "record", index = -1, data_type = 0, test_outcome = "fail")
-	@example(name = "record", index = 0x100, data_type = -1, test_outcome = "fail")
-	def test_init(self, name, index, data_type, test_outcome):
+	@given(name = st.just("defstruct"), index = st.just(0x100), test_outcome = st.just("pass"))
+	@example(name = "defstruct", index = -1, test_outcome = "fail")
+	def test_init(self, name, index, test_outcome):
 		if test_outcome == "pass":
-			Record(name, index, data_type)
+			DefStruct(name, index)
 		else:
 			with self.assertRaises(ValueError):
-				Record(name, index, data_type)	
+				DefStruct(name, index)
 
 	def test_collection(self):
-		examinee = Record("record", 0x100)
+		examinee = DefStruct("defstruct", 0x100)
+
+		with self.assertRaises(TypeError):
+			examinee.add(Array("x", 0x100, UNSIGNED32))
 
 		with self.assertRaises(TypeError):
 			examinee.add(Record("x", 0x100))
 
-		with self.assertRaises(TypeError):
-			examinee.add(DefStruct("x", 0x100))
-
-		with self.assertRaises(TypeError):
-			examinee.add(Array("x", 0x100))
-
 		with self.assertRaises(ValueError):
 			examinee.add(Variable("variable", 0x111, 0x00, UNSIGNED32))
 
-		examinee.add(Variable("variable", 0x100, 0x00, UNSIGNED32))
+		with self.assertRaises(ValueError):
+			examinee.add(Variable("variable", 0x100, 0x00, UNSIGNED32))
+
+		with self.assertRaises(ValueError):
+			examinee.add(Variable("variable", 0x100, 0x01, UNSIGNED8))
+
+		with self.assertRaises(ValueError):
+			examinee.add(Variable("variable", 0x100, 0xFF, UNSIGNED8))
+
+		examinee.add(Variable("variable", 0x100, 0x00, UNSIGNED8, "ro"))
 		self.assertTrue("variable" in examinee)
 		self.assertTrue(0x00 in examinee)
 
@@ -86,7 +87,7 @@ class RecordTestCase(unittest.TestCase):
 		with self.assertRaises(ValueError):
 			examinee.add(Variable("variable", 0x100, 0x01, UNSIGNED32))
 
-		examinee.add(Variable("x", 0x100, 0x01, UNSIGNED32))
+		examinee.add(Variable("x", 0x100, 0x01, UNSIGNED16, "ro"))
 		self.assertTrue("x" in examinee)
 		self.assertTrue(0x01 in examinee)
 
