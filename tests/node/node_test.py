@@ -2,6 +2,8 @@ import unittest
 import canopenx
 
 from canopenx.node import Node
+from canopenx.objectdictionary import Variable
+from canopenx.objectdictionary.datatypes import UNSIGNED8
 
 
 class NodeTestCase(unittest.TestCase):
@@ -46,3 +48,9 @@ class NodeTestCase(unittest.TestCase):
 		a = Node(1, dictionary1)
 		b = Node(1, dictionary2)
 		self.assertEqual(a, b)
+
+		dictionary2.add(Variable("variable", 0x100, 0x00, UNSIGNED8))
+
+		a = Node(1, dictionary1)
+		b = Node(1, dictionary2)
+		self.assertNotEqual(a, b)

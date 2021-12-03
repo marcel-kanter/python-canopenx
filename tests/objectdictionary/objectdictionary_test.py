@@ -1,16 +1,8 @@
 import canopenx
 import unittest
 
-
-class Item(object):
-	def __eq__(self, other):
-		if type(self) != type(other):
-			return False
-		return self is other or (self.name == other.name and self.index == other.index)
-
-	def __init__(self, name, index):
-		self.name = name
-		self.index = index
+from canopenx.objectdictionary import Variable
+from canopenx.objectdictionary import UNSIGNED32
 
 
 class ObjectDictionaryTestCase(unittest.TestCase):
@@ -36,16 +28,16 @@ class ObjectDictionaryTestCase(unittest.TestCase):
 			self.assertTrue(a == b)
 			self.assertEqual(a == b, b == a)
 
-			b.add(Item("variable", 0x100))
+			b.add(Variable("variable", 0x100, 0x00, UNSIGNED32))
 			self.assertFalse(a == b)
 			self.assertEqual(a == b, b == a)
 
-			a.add(Item("variable", 0x100))
+			a.add(Variable("variable", 0x100, 0x00, UNSIGNED32))
 			self.assertTrue(a == b)
 			self.assertEqual(a == b, b == a)
 
 			b = canopenx.ObjectDictionary()
-			b.add(Item("x", 0x100))
+			b.add(Variable("x", 0x100, 0x00, UNSIGNED32))
 			self.assertFalse(a == b)
 			self.assertEqual(a == b, b == a)
 
@@ -55,6 +47,9 @@ class ObjectDictionaryTestCase(unittest.TestCase):
 	def test_collection(self):
 		examinee = canopenx.ObjectDictionary()
 
-		examinee.add(Item("variable", 0x100))
+		with self.assertRaises(TypeError):
+			examinee.add(canopenx.ObjectDictionary())
+
+		examinee.add(Variable("variable", 0x100, 0x00, UNSIGNED32))
 		self.assertTrue("variable" in examinee)
 		self.assertTrue(0x100 in examinee)
