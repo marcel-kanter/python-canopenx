@@ -1,7 +1,7 @@
 import canopenx
 import unittest
 
-from canopenx.objectdictionary import Array, DefStruct, Record, Variable
+from canopenx.objectdictionary import Array, DefStruct, Domain, Record, Variable
 from canopenx.objectdictionary import UNSIGNED8, UNSIGNED32
 
 
@@ -33,6 +33,14 @@ class ObjectDictionaryTestCase(unittest.TestCase):
 			self.assertEqual(a == b, b == a)
 
 			a.add(Variable("variable", 0x100, 0x00, UNSIGNED32))
+			self.assertTrue(a == b)
+			self.assertEqual(a == b, b == a)
+
+			b.add(Domain("domain", 0x500))
+			self.assertFalse(a == b)
+			self.assertEqual(a == b, b == a)
+
+			a.add(Domain("domain", 0x500))
 			self.assertTrue(a == b)
 			self.assertEqual(a == b, b == a)
 
@@ -87,6 +95,10 @@ class ObjectDictionaryTestCase(unittest.TestCase):
 		examinee.add(DefStruct("defstruct", 0x400))
 		self.assertTrue("defstruct" in examinee)
 		self.assertTrue(0x400 in examinee)
+
+		examinee.add(Domain("domain", 0x500))
+		self.assertTrue("domain" in examinee)
+		self.assertTrue(0x500 in examinee)
 
 		examinee.add(Record("record", 0x300))
 		self.assertTrue("record" in examinee)

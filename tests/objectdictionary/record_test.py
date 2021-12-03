@@ -1,7 +1,7 @@
 import unittest
 from hypothesis import given, example, strategies as st
 
-from canopenx.objectdictionary import Array, DefStruct, Record, Variable
+from canopenx.objectdictionary import Array, DefStruct, Domain, Record, Variable
 from canopenx.objectdictionary import UNSIGNED32
 
 
@@ -69,6 +69,9 @@ class RecordTestCase(unittest.TestCase):
 
 		with self.assertRaises(TypeError):
 			examinee.add(DefStruct("x", 0x100))
+
+		with self.assertRaises(TypeError):
+			examinee.add(Domain("x", 0x100))
 
 		with self.assertRaises(TypeError):
 			examinee.add(Array("x", 0x100))

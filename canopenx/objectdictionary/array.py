@@ -1,3 +1,4 @@
+from .domain import Domain
 from .variable import Variable
 
 
@@ -67,14 +68,16 @@ class Array(object):
 		self._items_name = {}
 
 	def __len__(self):
-		""" Returns the number of objects in the Array.
+		""" Returns the number of items in the Array.
 		"""
 		return len(self._items_subindex)
 
 	def add(self, item):
 		""" Adds an item to the Array. It may be accessed later by the name or the subindex.
+
+		:param item: The item to add. Must be a Variable.
 		"""
-		if not isinstance(item, Variable):
+		if not isinstance(item, Variable) or isinstance(item, Domain):
 			raise TypeError("This type of item is not supported.")
 		if item.subindex in self._items_subindex or item.name in self._items_name:
 			raise ValueError("A item with this subindex or name is already in the Array.")
