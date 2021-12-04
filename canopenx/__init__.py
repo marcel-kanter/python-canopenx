@@ -1,6 +1,6 @@
 from .network import Network
-from .node import Node
+from .node import LocalNode, Node, RemoteNode
 from .objectdictionary import ObjectDictionary
 
 
-__version__ = "0.0.18"
+__version__ = "0.0.19"
