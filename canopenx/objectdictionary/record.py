@@ -1,5 +1,6 @@
 from .domain import Domain
 from .variable import Variable
+from .collectionproxy import CollectionProxy
 
 
 class Record(object):
@@ -104,3 +105,8 @@ class Record(object):
 		""" Returns the name of the Record.
 		"""
 		return self._name
+
+	def proxy(self, node):
+		""" Returns a proxy bound to a specific node.
+		"""
+		return CollectionProxy(self, node)

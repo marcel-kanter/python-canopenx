@@ -8,6 +8,9 @@ class Node(object):
 			return False
 		return self is other or (self._dictionary == other._dictionary and self._id == other._id and self._name == other._name)
 
+	def __getitem__(self, key):
+		return self._dictionary[key].proxy(self)
+
 	def __init__(self, node_id, dictionary, name = None):
 		"""
 		:param node_id: The node id of this Node. Must be in range 1 .. 127.

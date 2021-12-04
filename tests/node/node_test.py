@@ -2,8 +2,8 @@ import unittest
 import canopenx
 
 from canopenx.node import Node
-from canopenx.objectdictionary import Variable
-from canopenx.objectdictionary.datatypes import UNSIGNED8
+from canopenx.objectdictionary import Array, DefStruct, DefType, Domain, Record, Variable
+from canopenx.objectdictionary.datatypes import UNSIGNED8, UNSIGNED32
 
 
 class NodeTestCase(unittest.TestCase):
@@ -54,3 +54,56 @@ class NodeTestCase(unittest.TestCase):
 		a = Node(1, dictionary1)
 		b = Node(1, dictionary2)
 		self.assertNotEqual(a, b)
+
+	def test_objectdictionary_proxies(self):
+		dictionary = canopenx.ObjectDictionary()
+
+		examinee = Node(1, dictionary)
+
+		# Array
+		with self.assertRaises(KeyError):
+			arr = examinee["array"]
+
+		dictionary.add(Array("array", 0x1000, UNSIGNED32))
+
+		arr = examinee["array"]
+
+		# DefStruct
+		with self.assertRaises(KeyError):
+			defstr = examinee["defstruct"]
+
+		dictionary.add(DefStruct("defstruct", 0x2000))
+
+		defstr = examinee["defstruct"]
+
+		# DefType
+		with self.assertRaises(KeyError):
+			deftyp = examinee["deftype"]
+
+		dictionary.add(DefType("deftype", 0x3000))
+
+		deftyp = examinee["deftype"]
+
+		# Domain
+		with self.assertRaises(KeyError):
+			dom = examinee["domain"]
+
+		dictionary.add(Domain("domain", 0x4000))
+
+		dom = examinee["domain"]
+
+		# Record
+		with self.assertRaises(KeyError):
+			rec = examinee["record"]
+
+		dictionary.add(Record("record", 0x5000))
+
+		rec = examinee["record"]
+
+		# Variable
+		with self.assertRaises(KeyError):
+			var = examinee["variable"]
+
+		dictionary.add(Variable("variable", 0x6000, 0x00, UNSIGNED32))
+
+		var = examinee["variable"]

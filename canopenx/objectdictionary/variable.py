@@ -1,4 +1,5 @@
 from .datatypes import *
+from .itemproxy import ItemProxy
 
 
 class Variable(object):
@@ -71,6 +72,11 @@ class Variable(object):
 		""" Returns the name of the Variable.
 		"""
 		return self._name
+
+	def proxy(self, node):
+		""" Returns a proxy bound to a specific node.
+		"""
+		return ItemProxy(self, node)
 
 	@property
 	def size(self):
