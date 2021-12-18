@@ -8,7 +8,7 @@ class DefType(Variable):
 	This class is a representation of a DefType of an object dictionary. Basically this is a Variable with fixed subindex, data_type and access_type.
 	Upon read, it should return the number of bits needed to encode the type.
 	"""
-	def __init__(self, name, index):
+	def __init__(self, name, index, default_value = None):
 		"""
 		:param name: A string. The name of this variable.
 
@@ -16,7 +16,7 @@ class DefType(Variable):
 
 		:raises: TypeError, ValueError
 		"""
-		Variable.__init__(self, name, index, 0, UNSIGNED32, "ro")
+		Variable.__init__(self, name, index, 0, UNSIGNED32, "ro", default_value)
 
 	@property
 	def access_type(self):

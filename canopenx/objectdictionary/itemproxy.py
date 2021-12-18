@@ -19,6 +19,12 @@ class ItemProxy(object):
 		return self._original._data_type
 
 	@property
+	def default_value(self):
+		""" Returns the default value of the object.
+		"""
+		return self._original.default_value
+
+	@property
 	def index(self):
 		""" Returns the index of the proxied object.
 		"""

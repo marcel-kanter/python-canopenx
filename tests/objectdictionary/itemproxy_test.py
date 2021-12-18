@@ -19,6 +19,7 @@ class ItemProxyTestCase(unittest.TestCase):
 
 		self.assertEqual(dictionary["deftype"].access_type, node["deftype"].access_type)
 		self.assertEqual(dictionary["deftype"].data_type, node["deftype"].data_type)
+		self.assertEqual(dictionary["deftype"].default_value, node["deftype"].default_value)
 		self.assertEqual(dictionary["deftype"].index, node["deftype"].index)
 		self.assertEqual(dictionary["deftype"].name, node["deftype"].name)
 		self.assertEqual(dictionary["deftype"].subindex, node["deftype"].subindex)
@@ -28,6 +29,7 @@ class ItemProxyTestCase(unittest.TestCase):
 
 		self.assertEqual(dictionary["domain"].access_type, node["domain"].access_type)
 		self.assertEqual(dictionary["domain"].data_type, node["domain"].data_type)
+		self.assertEqual(dictionary["domain"].default_value, node["domain"].default_value)
 		self.assertEqual(dictionary["domain"].index, node["domain"].index)
 		self.assertEqual(dictionary["domain"].name, node["domain"].name)
 		self.assertEqual(dictionary["domain"].subindex, node["domain"].subindex)
@@ -37,6 +39,7 @@ class ItemProxyTestCase(unittest.TestCase):
 
 		self.assertEqual(dictionary["variable"].access_type, node["variable"].access_type)
 		self.assertEqual(dictionary["variable"].data_type, node["variable"].data_type)
+		self.assertEqual(dictionary["variable"].default_value, node["variable"].default_value)
 		self.assertEqual(dictionary["variable"].index, node["variable"].index)
 		self.assertEqual(dictionary["variable"].name, node["variable"].name)
 		self.assertEqual(dictionary["variable"].subindex, node["variable"].subindex)

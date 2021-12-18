@@ -5,7 +5,7 @@ from .itemproxy import ItemProxy
 
 
 class Variable(object):
-	__slots__ = ["_name", "_index", "_subindex", "_data_type", "_access_type"]
+	__slots__ = ["_name", "_index", "_subindex", "_data_type", "_access_type", "_default_value"]
 
 	__canopen_epoch = calendar.timegm((1984, 1, 1, 0, 0, 0))
 	__sizes = {BOOLEAN: 1, INTEGER8: 8, INTEGER16: 16, INTEGER32: 32, UNSIGNED8: 8, UNSIGNED16: 16, UNSIGNED32: 32, REAL32: 32, VISIBLE_STRING: 0, OCTET_STRING: 0, UNICODE_STRING: 0, TIME_OF_DAY: 48, TIME_DIFFERENCE: 48, DOMAIN: 0, INTEGER24: 24, REAL64: 64, INTEGER40: 40, INTEGER48: 48, INTEGER56: 56, INTEGER64: 64, UNSIGNED24: 24, UNSIGNED40: 40, UNSIGNED48: 48, UNSIGNED56: 56, UNSIGNED64: 64}
@@ -17,7 +17,7 @@ class Variable(object):
 			return False
 		return self is other or (self._name == other._name and self._index == other._index and self._subindex == other._subindex and self._data_type == other._data_type and self._access_type == other._access_type)
 
-	def __init__(self, name, index, subindex, data_type, access_type = "rw"):
+	def __init__(self, name, index, subindex, data_type, access_type = "rw", default_value = None):
 		"""
 		:param name: A string. The name of this variable.
 
@@ -28,6 +28,8 @@ class Variable(object):
 		:param data_type: An integer. Must be one of the allowed data types.
 
 		:param access_type: A string. Must be one of "rw", "wo", "ro", "const".
+
+		:param default_value: The default value for this variable.
 
 		:raises: ValueError
 		"""
@@ -40,11 +42,31 @@ class Variable(object):
 		if access_type not in ["rw", "wo", "ro", "const"]:
 			raise ValueError("The specified access_type is not one of \"rw\", \"wo\", \"ro\", \"const\".")
 
+		if default_value is None:
+			if data_type == BOOLEAN:
+				default_value = False
+			elif data_type in [REAL32, REAL64]:
+				default_value = 0.0	
+			elif data_type in [VISIBLE_STRING, OCTET_STRING, UNICODE_STRING]:
+				default_value = ""
+			elif data_type == DOMAIN:
+				default_value = b""
+			elif data_type == TIME_OF_DAY:
+				default_value = self.__canopen_epoch
+			else:
+				default_value = 0
+
 		self._name = str(name)
 		self._index = int(index)
 		self._subindex = int(subindex)
 		self._data_type = int(data_type)
 		self._access_type = str(access_type)
+
+		try:
+			self.encode(default_value)
+		except ValueError:
+			raise ValueError("The specfied default_value cannot be encoded with the specified data type.")
+		self._default_value = default_value
 
 	@property
 	def access_type(self):
@@ -171,6 +193,20 @@ class Variable(object):
 
 		return value
 
+	@property
+	def default_value(self):
+		""" Returns the default value for this Variable.
+		"""
+		return self._default_value
+
+	@default_value.setter
+	def default_value(self, x):
+		try:
+			self.encode(x)
+		except ValueError:
+			raise ValueError("The specfied default_value cannot be encoded with the specified data type.")
+		self._default_value = x
+
 	def encode(self, value):
 		""" Returns the byte-like CANopen representation of the given value, depending on the type of the CANopen variable.
 
@@ -263,7 +299,7 @@ class Variable(object):
 
 			if self._data_type == UNSIGNED64:
 				data = struct.pack("<Q", value)
-		except struct.error:
+		except (struct.error, TypeError):
 			raise ValueError("Could not encode the specified data. Maybe the data format does not match the data type of the Variable.")
 		except OverflowError:
 			raise ValueError("Could not encode the specified data. The value overflowed, maybe a negative value should be encoded as unsigned.")

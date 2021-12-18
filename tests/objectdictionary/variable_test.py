@@ -37,6 +37,8 @@ class VariableTestCase(unittest.TestCase):
 				with self.subTest("x=" + str(x) + ",y=" + str(y)):
 					self.assertEqual(variable.decode(x), y)
 
+		variable.default_value = 1
+
 	def test_datatype_integer16(self):
 		variable = Variable("INTEGER16", 100, 0, INTEGER16)
 
@@ -75,6 +77,8 @@ class VariableTestCase(unittest.TestCase):
 					with self.assertRaises(ValueError):
 						variable.decode(x)
 
+		variable.default_value = 1
+
 	def test_datatype_integer32(self):
 		variable = Variable("INTEGER32", 100, 0, INTEGER32)
 
@@ -110,6 +114,8 @@ class VariableTestCase(unittest.TestCase):
 					with self.assertRaises(ValueError):
 						variable.decode(x)
 
+		variable.default_value = 1
+
 	def test_datatype_unsigned8(self):
 		variable = Variable("UNSIGNED8", 100, 0, UNSIGNED8)
 
@@ -138,6 +144,8 @@ class VariableTestCase(unittest.TestCase):
 			for x, y in test_data:
 				with self.subTest("x=" + str(x) + ",y=" + str(y)):
 					self.assertEqual(variable.decode(x), y)
+
+		variable.default_value = 1
 
 	def test_datatype_unsigned16(self):
 		variable = Variable("UNSIGNED16", 100, 0, UNSIGNED16)
@@ -174,6 +182,8 @@ class VariableTestCase(unittest.TestCase):
 					with self.assertRaises(ValueError):
 						variable.decode(x)
 
+		variable.default_value = 1
+
 	def test_datatype_unsigned32(self):
 		variable = Variable("UNSIGNED32", 100, 0, UNSIGNED32)
 
@@ -209,6 +219,8 @@ class VariableTestCase(unittest.TestCase):
 					with self.assertRaises(ValueError):
 						variable.decode(x)
 
+		variable.default_value = 1
+
 	def test_datatype_real32(self):
 		variable = Variable("REAL32", 100, 0, REAL32)
 
@@ -232,6 +244,8 @@ class VariableTestCase(unittest.TestCase):
 					with self.assertRaises(ValueError):
 						variable.decode(x)
 
+		variable.default_value = 1
+
 	def test_datatype_visible_string(self):
 		variable = Variable("VISIBLE_STRING", 100, 0, VISIBLE_STRING)
 
@@ -248,6 +262,10 @@ class VariableTestCase(unittest.TestCase):
 			for x, y in test_data:
 				with self.subTest("x=" + str(x) + ",y=" + str(y)):
 					self.assertEqual(variable.decode(x), y)
+
+		with self.assertRaises(ValueError):
+			variable.default_value = 1
+		variable.default_value = ""
 
 	def test_datatype_octet_string(self):
 		variable = Variable("OCTET_STRING", 100, 0, OCTET_STRING)
@@ -266,6 +284,10 @@ class VariableTestCase(unittest.TestCase):
 				with self.subTest("x=" + str(x) + ",y=" + str(y)):
 					self.assertEqual(variable.decode(x), y)
 
+		with self.assertRaises(ValueError):
+			variable.default_value = 1
+		variable.default_value = ""
+
 	def test_datatype_unicode_string(self):
 		variable = Variable("UNICODE_STRING", 100, 0, UNICODE_STRING)
 
@@ -282,6 +304,10 @@ class VariableTestCase(unittest.TestCase):
 			for x, y in test_data:
 				with self.subTest("x=" + str(x) + ",y=" + str(y)):
 					self.assertEqual(variable.decode(x), y)
+
+		with self.assertRaises(ValueError):
+			variable.default_value = 1
+		variable.default_value = ""
 
 	def test_datatype_time_of_day(self):
 		variable = Variable("TIME_OF_DAY", 100, 0, TIME_OF_DAY)
@@ -305,6 +331,9 @@ class VariableTestCase(unittest.TestCase):
 				with self.subTest("x=" + str(x) + ",y=" + str(y)):
 					self.assertEqual(variable.decode(x), y)
 
+		with self.assertRaises(ValueError):
+			variable.default_value = 1
+
 	def test_datatype_time_difference(self):
 		variable = Variable("TIME_DIFFERENCE", 100, 0, TIME_DIFFERENCE)
 
@@ -324,6 +353,8 @@ class VariableTestCase(unittest.TestCase):
 				with self.subTest("x=" + str(x) + ",y=" + str(y)):
 					self.assertEqual(variable.decode(x), y)
 
+		variable.default_value = 1
+
 	def test_datatype_domain(self):
 		variable = Variable("DOMAIN", 100, 0, DOMAIN)
 
@@ -340,6 +371,8 @@ class VariableTestCase(unittest.TestCase):
 			for x, y in test_data:
 				with self.subTest("x=" + str(x) + ",y=" + str(y)):
 					self.assertEqual(variable.decode(x), y)
+
+		variable.default_value = 1
 
 	def test_datatype_integer24(self):
 		variable = Variable("INTEGER24", 100, 0, INTEGER24)
@@ -376,6 +409,8 @@ class VariableTestCase(unittest.TestCase):
 					with self.assertRaises(ValueError):
 						variable.decode(x)
 
+		variable.default_value = 1
+
 	def test_datatype_real64(self):
 		variable = Variable("REAL64", 100, 0, REAL64)
 
@@ -398,6 +433,8 @@ class VariableTestCase(unittest.TestCase):
 				with self.subTest("x=" + str(x)):
 					with self.assertRaises(ValueError):
 						variable.decode(x)
+
+		variable.default_value = 1
 
 	def test_datatype_integer40(self):
 		variable = Variable("INTEGER40", 100, 0, INTEGER40)
@@ -434,6 +471,8 @@ class VariableTestCase(unittest.TestCase):
 					with self.assertRaises(ValueError):
 						variable.decode(x)
 
+		variable.default_value = 1
+
 	def test_datatype_integer48(self):
 		variable = Variable("INTEGER48", 100, 0, INTEGER48)
 
@@ -468,6 +507,8 @@ class VariableTestCase(unittest.TestCase):
 				with self.subTest("x=" + str(x)):
 					with self.assertRaises(ValueError):
 						variable.decode(x)
+
+		variable.default_value = 1
 
 	def test_datatype_integer56(self):
 		variable = Variable("INTEGER56", 100, 0, INTEGER56)
@@ -504,6 +545,8 @@ class VariableTestCase(unittest.TestCase):
 					with self.assertRaises(ValueError):
 						variable.decode(x)
 
+		variable.default_value = 1
+
 	def test_datatype_integer64(self):
 		variable = Variable("INTEGER64", 100, 0, INTEGER64)
 
@@ -538,6 +581,8 @@ class VariableTestCase(unittest.TestCase):
 				with self.subTest("x=" + str(x)):
 					with self.assertRaises(ValueError):
 						variable.decode(x)
+
+		variable.default_value = 1
 
 	def test_datatype_unsigned24(self):
 		variable = Variable("UNSIGNED24", 100, 0, UNSIGNED24)
@@ -574,6 +619,8 @@ class VariableTestCase(unittest.TestCase):
 					with self.assertRaises(ValueError):
 						variable.decode(x)
 
+		variable.default_value = 1
+
 	def test_datatype_unsigned40(self):
 		variable = Variable("UNSIGNED40", 100, 0, UNSIGNED40)
 
@@ -608,6 +655,8 @@ class VariableTestCase(unittest.TestCase):
 				with self.subTest("x=" + str(x)):
 					with self.assertRaises(ValueError):
 						variable.decode(x)
+
+		variable.default_value = 1
 
 	def test_datatype_unsigned48(self):
 		variable = Variable("UNSIGNED48", 100, 0, UNSIGNED48)
@@ -644,6 +693,8 @@ class VariableTestCase(unittest.TestCase):
 					with self.assertRaises(ValueError):
 						variable.decode(x)
 
+		variable.default_value = 1
+
 	def test_datatype_unsigned56(self):
 		variable = Variable("UNSIGNED56", 100, 0, UNSIGNED56)
 
@@ -678,6 +729,8 @@ class VariableTestCase(unittest.TestCase):
 				with self.subTest("x=" + str(x)):
 					with self.assertRaises(ValueError):
 						variable.decode(x)
+
+		variable.default_value = 1
 
 	def test_datatype_unsigned64(self):
 		variable = Variable("UNSIGNED64", 100, 0, UNSIGNED64)
