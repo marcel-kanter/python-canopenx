@@ -817,7 +817,8 @@ class VariableTestCase(unittest.TestCase):
 	@example(name = "variable", index = 0x100, subindex = 0x00, data_type = BOOLEAN, access_type = "", test_outcome = "fail")
 	def test_init(self, name, index, subindex, data_type, access_type, test_outcome):
 		if test_outcome == "pass":
-			Variable(name, index, subindex, data_type, access_type)
+			var = Variable(name, index, subindex, data_type, access_type)
+			self.assertEqual(var.object_type, 7)
 		else:
 			with self.assertRaises(ValueError):
 				Variable(name, index, subindex, data_type, access_type)

@@ -56,10 +56,11 @@ class RecordTestCase(unittest.TestCase):
 	@example(name = "record", index = 0x100, data_type = -1, test_outcome = "fail")
 	def test_init(self, name, index, data_type, test_outcome):
 		if test_outcome == "pass":
-			Record(name, index, data_type)
+			rec = Record(name, index, data_type)
+			self.assertEqual(rec.object_type, 9)
 		else:
 			with self.assertRaises(ValueError):
-				Record(name, index, data_type)	
+				Record(name, index, data_type)
 
 	def test_collection(self):
 		examinee = Record("record", 0x100)

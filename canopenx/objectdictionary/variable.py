@@ -2,9 +2,17 @@ import calendar
 import struct
 from .datatypes import *
 from .itemproxy import ItemProxy
+from canopenx.objectdictionary import objecttypes
 
 
 class Variable(object):
+	""" Representation of an object of type VARIABLE
+
+	This class is the representation of a Variable in a CANopen object dictionary.
+	"""
+
+	object_type = objecttypes.VARIABLE
+
 	__slots__ = ["_name", "_index", "_subindex", "_data_type", "_access_type", "_default_value"]
 
 	__canopen_epoch = calendar.timegm((1984, 1, 1, 0, 0, 0))
@@ -46,7 +54,7 @@ class Variable(object):
 			if data_type == BOOLEAN:
 				default_value = False
 			elif data_type in [REAL32, REAL64]:
-				default_value = 0.0	
+				default_value = 0.0
 			elif data_type in [VISIBLE_STRING, OCTET_STRING, UNICODE_STRING]:
 				default_value = ""
 			elif data_type == DOMAIN:

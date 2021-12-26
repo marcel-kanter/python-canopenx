@@ -11,21 +11,23 @@ class DefTypeTestCase(unittest.TestCase):
 
 		name = "deftype"
 		index = 0x100
-		deftype = DefType(name, index)
+		dt = DefType(name, index)
 
-		self.assertEqual(deftype.name, name)
-		self.assertEqual(deftype.index, index)
-		self.assertEqual(deftype.subindex, 0)
-		self.assertEqual(deftype.data_type, UNSIGNED32)
-		self.assertEqual(deftype.access_type, "ro")
+		self.assertEqual(dt.name, name)
+		self.assertEqual(dt.index, index)
+		self.assertEqual(dt.subindex, 0)
+		self.assertEqual(dt.data_type, UNSIGNED32)
+		self.assertEqual(dt.access_type, "ro")
+
+		self.assertEqual(dt.object_type, 5)
 
 		with self.assertRaises(AttributeError):
-			deftype.name = name
+			dt.name = name
 		with self.assertRaises(AttributeError):
-			deftype.index = index
+			dt.index = index
 		with self.assertRaises(AttributeError):
-			deftype.subindex = 0
+			dt.subindex = 0
 		with self.assertRaises(AttributeError):
-			deftype.data_type = UNSIGNED32
+			dt.data_type = UNSIGNED32
 		with self.assertRaises(AttributeError):
-			deftype.access_type = "ro"
+			dt.access_type = "ro"

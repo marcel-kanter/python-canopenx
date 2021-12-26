@@ -2,7 +2,7 @@ import unittest
 from hypothesis import given, example, strategies as st
 
 from canopenx.objectdictionary import Array, DefStruct, Domain, Record, Variable
-from canopenx.objectdictionary import BOOLEAN, UNSIGNED32
+from canopenx.objectdictionary.datatypes import BOOLEAN, UNSIGNED32
 
 
 class ArrayTestCase(unittest.TestCase):
@@ -57,10 +57,11 @@ class ArrayTestCase(unittest.TestCase):
 	@example(name = "array", index = 0x100, data_type = 0x20, test_outcome = "fail")
 	def test_init(self, name, index, data_type, test_outcome):
 		if test_outcome == "pass":
-			Array(name, index, data_type)
+			arr = Array(name, index, data_type)
+			self.assertEqual(arr.object_type, 8)
 		else:
 			with self.assertRaises(ValueError):
-				Array(name, index, data_type)	
+				Array(name, index, data_type)
 
 	def test_collection(self):
 		examinee = Array("array", 0x100, UNSIGNED32)

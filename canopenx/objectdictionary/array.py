@@ -1,9 +1,17 @@
 from .domain import Domain
 from .variable import Variable
 from .collectionproxy import CollectionProxy
+from canopenx.objectdictionary import objecttypes
 
 
 class Array(object):
+	""" Representation of an object of type ARRAY
+
+	This class is the representation of an ARRAY of a object dictionary. It is a mutable auto-associative mapping and may contain zero or more variables.
+	"""
+
+	object_type = objecttypes.ARRAY
+
 	__slots__ = ["_name", "_index", "_data_type", "_items_subindex", "_items_name"]
 
 	def __contains__(self, key):

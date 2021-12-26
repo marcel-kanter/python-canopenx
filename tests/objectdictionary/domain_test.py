@@ -31,11 +31,11 @@ class DomainTestCase(unittest.TestCase):
 			b = Domain("x", 0x100, "rw")
 			self.assertFalse(a == b)
 			self.assertEqual(a == b, b == a)
-		
+
 			b = Domain("domain", 0x111, "rw")
 			self.assertFalse(a == b)
 			self.assertEqual(a == b, b == a)
-		
+
 			b = Domain("domain", 0x100, "ro")
 			self.assertFalse(a == b)
 			self.assertEqual(a == b, b == a)
@@ -46,10 +46,11 @@ class DomainTestCase(unittest.TestCase):
 	@example(name = "domain", index = 0x100, access_type = "", test_outcome = "fail")
 	def test_init(self, name, index, access_type, test_outcome):
 		if test_outcome == "pass":
-			Domain(name, index, access_type)
+			dom = Domain(name, index, access_type)
+			self.assertEqual(dom.object_type, 2)
 		else:
 			with self.assertRaises(ValueError):
-				Domain(name, index, access_type)	
+				Domain(name, index, access_type)
 
 	def test_properties(self):
 		examinee = Domain("domain", 0x100, "rw")

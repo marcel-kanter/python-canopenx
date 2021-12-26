@@ -51,7 +51,8 @@ class DefStructTestCase(unittest.TestCase):
 	@example(name = "defstruct", index = -1, test_outcome = "fail")
 	def test_init(self, name, index, test_outcome):
 		if test_outcome == "pass":
-			DefStruct(name, index)
+			ds = DefStruct(name, index)
+			self.assertEqual(ds.object_type, 6)
 		else:
 			with self.assertRaises(ValueError):
 				DefStruct(name, index)

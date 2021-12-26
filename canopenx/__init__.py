@@ -3,4 +3,4 @@ from .node import LocalNode, Node, RemoteNode
 from .objectdictionary import ObjectDictionary
 
 
-__version__ = "0.0.22"
+__version__ = "0.0.23"

@@ -1,9 +1,17 @@
 from .array import Array
 from .datatypes import UNSIGNED8, UNSIGNED16, UNSIGNED32
 from .variable import Variable
+from canopenx.objectdictionary import objecttypes
 
 
 class DefStruct(Array):
+	"""  Representation of an object of type DEFSTRUCT
+
+	This class is the representation of a DEFSTRUCT of an object dictionary. It is a mutable auto-associative mapping and may contain zero or more variables.
+	"""
+
+	object_type = objecttypes.DEFSTRUCT
+
 	def __init__(self, name, index):
 		"""
 		:param name: A string. The name of this variable.
@@ -17,7 +25,7 @@ class DefStruct(Array):
 	def add(self, item):
 		if not isinstance(item, Variable):
 			raise TypeError("This type of item is not supported.")
-		
+
 		if item.subindex == 0x00:
 			if item.data_type != UNSIGNED8:
 				raise ValueError("The data type of the item at subindex 0x00 must be UNSIGNED8.")
