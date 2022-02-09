@@ -24,9 +24,6 @@ class EMCYConsumer(Service):
 		Service.detach(self)
 
 	def on_emcy(self, message):
-		if message.is_extended_id != False:
-			return
-
 		error_code, error_register, data = struct.unpack("<HB5s", message.data)
 
 		event = EMCYEvent(error_code, error_register, data)

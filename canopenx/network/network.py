@@ -117,8 +117,12 @@ class Network(object):
 	def on_message_received(self, message):
 		""" Handler for received messages. It distributes the message to all callbacks that are registered to the message id.
 		"""
+		if message.is_extended_id:
+			cob_id = (1 << 29) | message.arbitration_id
+		else:
+			cob_id = message.arbitration_id
 		try:
-			for callback in self._subscribers[message.arbitration_id]:
+			for callback in self._subscribers[cob_id]:
 				try:
 					callback(message)
 				except:
@@ -139,54 +143,62 @@ class Network(object):
 
 		self._bus.send(message)
 
-	def subscribe(self, message_id, callback):
-		""" Subscribe to a message id. For each message id multiple differend callbacks are allowed.
+	def subscribe(self, cob_id, callback):
+		""" Subscribe to CAN messages with the specified identifier. For each message id multiple differend callbacks are allowed. The frame type (base or extended) is encoded into bit 29 and forms the cob_id.
 		A ValueError is raised if the callback is already registered for the specified message id.
 
-		:param message_id: The CAN id for which the callback should be called.
+		:param cob_id: The CAN object id for which the callback should be called.
+			Bit 29 (frame) indicates the CAN message identifier length. When the bit is set, an extended frame identifier in the lowest 29 bits is used. When the bit is clear, a basic frame identifier in the lowest 11 bits is used.
 
 		:param callback: The callback.
 
 		:raises: ValueError
 		"""
-		message_id = int(message_id)
-		if message_id not in self._subscribers:
-			self._subscribers[message_id] = []
+		cob_id = int(cob_id)
+		if cob_id & (1 << 29):
+			cob_id &= 0x3FFFFFFF
+		else:
+			cob_id &= 0x7FF
 
-		if callback in self._subscribers[message_id]:
-			raise ValueError("The specified callback is already registered for this message id.")
+		if cob_id not in self._subscribers:
+			self._subscribers[cob_id] = []
 
-		self._subscribers[message_id].append(callback)
+		if callback in self._subscribers[cob_id]:
+			raise ValueError("The specified callback is already registered for this cob id.")
 
-	def subscribed(self, message_id, callback):
-		""" Returns True if the callback is registered for the specified message id.
+		self._subscribers[cob_id].append(callback)
+
+	def subscribed(self, cob_id, callback):
+		""" Returns True if the callback is registered for the specified message id. The frame type (base or extended) is encoded into bit 29 and forms the cob_id.
 		Returns False, if there are no callbacks registered for the message id.
 
-		:param message_id: The CAN id for which the callback should be called.
+		:param cob_id: The CAN id for which the callback should be checked.
+			Bit 29 (frame) indicates the CAN message identifier length. When the bit is set, an extended frame identifier in the lowest 29 bits is used. When the bit is clear, a basic frame identifier in the lowest 11 bits is used.
 
 		:param callback: The callback.
 		"""
 		try:
-			return callback in self._subscribers[message_id]
+			return callback in self._subscribers[cob_id]
 		except KeyError:
 			return False
 
-	def unsubscribe(self, message_id, callback):
-		""" Unregister the callback for the message id.
+	def unsubscribe(self, cob_id, callback):
+		""" Unregister the callback for the message id. The frame type (base or extended) is encoded into bit 29 and forms the cob_id.
 		A ValueError is raised if the callback is not in the list of callbacks (was not registered).
 
-		:param message_id: The CAN id for which the callback should be called.
+		:param cob_id: The CAN id for which the callback should be removed.
+			Bit 29 (frame) indicates the CAN message identifier length. When the bit is set, an extended frame identifier in the lowest 29 bits is used. When the bit is clear, a basic frame identifier in the lowest 11 bits is used.
 
 		:param callback: The callback.
 
 		:raises: ValueError
 		"""
-		message_id = int(message_id)
+		cob_id = int(cob_id)
 
 		try:
-			self._subscribers[message_id].remove(callback)
+			self._subscribers[cob_id].remove(callback)
 		except KeyError:
-			raise ValueError("There are no callbacks registered for the specified message id.")
+			raise ValueError("There are no callbacks registered for the specified cob id.")
 
 
 class MessageListener(can.Listener):
