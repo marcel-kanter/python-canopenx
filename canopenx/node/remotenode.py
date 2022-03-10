@@ -1,6 +1,7 @@
 from .node import Node
 from .service.nmt import RemoteNMTSlave
 from .service.emcy import EMCYConsumer
+from .service.sdo import SDOClient
 
 
 class RemoteNode(Node):
@@ -12,13 +13,16 @@ class RemoteNode(Node):
 		Node.__init__(self, node_id, dictionary)
 		self.nmt = RemoteNMTSlave()
 		self.emcy = EMCYConsumer()
+		self.sdo = SDOClient()
 
 	def attach(self, network):
 		Node.attach(self, network)
 		self.nmt.attach(self)
 		self.emcy.attach(self)
+		self.sdo.attach(self)
 
 	def detach(self):
+		self.sdo.detach()
 		self.emcy.detach()
 		self.nmt.detach()
 		Node.detach(self)
