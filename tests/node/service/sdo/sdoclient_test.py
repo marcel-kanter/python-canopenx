@@ -1,4 +1,5 @@
 import can
+import struct
 import sys
 import threading
 import unittest
@@ -34,6 +35,8 @@ class SDOClientTestCase(unittest.TestCase):
 
 		helper.start()
 
+		node.sdo.download(0x1000, 0x00, b"\x01\x00")
+
 		helper.join(1.0)
 
 		network.disconnect()
@@ -52,6 +55,8 @@ class SDOClientTestCase(unittest.TestCase):
 		network.add(node)
 
 		helper.start()
+
+		node.sdo.upload(0x1000, 0x00)
 
 		helper.join(1.0)
 
@@ -72,6 +77,8 @@ class SDOClientTestCase(unittest.TestCase):
 
 		helper.start()
 
+		node.sdo.download(0x2000, 0x00, b"\x01\x00\x00\x00\x00\x00\x00\x00")
+
 		helper.join(1.0)
 
 		network.disconnect()
@@ -90,6 +97,8 @@ class SDOClientTestCase(unittest.TestCase):
 		network.add(node)
 
 		helper.start()
+
+		node.sdo.upload(0x2000, 0x00)
 
 		helper.join(1.0)
 
@@ -117,7 +126,17 @@ class ServiceTestNode(Node):
 
 def handle_expedited_download(testcase, bus):
 	try:
-		pass
+		# Initiate Download Request
+		message = bus.recv(timeout = 1.0)
+		testcase.assertEqual(message.arbitration_id, 0x60A)
+		testcase.assertEqual(message.data, b"\x2B\x00\x10\x00\x01\x00\x00\x00")
+
+		# Initiate Download Confirmation
+		index = 0x1000
+		subindex = 0x00
+		d = struct.pack("<BHB4s", 0x60, index, subindex, b"\x00\x00\x00\x00")
+		message = can.Message(arbitration_id = 0x58A, is_extended_id = False, data = d)
+		bus.send(message)
 	except AssertionError:
 		testcase.result.addFailure(testcase, sys.exc_info())
 	except:
@@ -126,7 +145,18 @@ def handle_expedited_download(testcase, bus):
 
 def handle_expedited_upload(testcase, bus):
 	try:
-		pass
+		# Initiate Upload Request
+		message = bus.recv(timeout = 1.0)
+		testcase.assertEqual(message.arbitration_id, 0x60A)
+		testcase.assertEqual(message.data, b"\x40\x00\x10\x00\x00\x00\x00\x00")
+
+		# Initiate Upload Confirmation
+		index = 0x1000
+		subindex = 0x00
+		data = b"\x01\x00\x00\x00"
+		d = struct.pack("<BHB4s", 0x4B, index, subindex, data)
+		message = can.Message(arbitration_id = 0x58A, is_extended_id = False, data = d)
+		bus.send(message)
 	except AssertionError:
 		testcase.result.addFailure(testcase, sys.exc_info())
 	except:
@@ -135,7 +165,17 @@ def handle_expedited_upload(testcase, bus):
 
 def handle_segmented_download(testcase, bus):
 	try:
-		pass
+		# Initiate Download Request
+		message = bus.recv(timeout = 1.0)
+		testcase.assertEqual(message.arbitration_id, 0x60A)
+		testcase.assertEqual(message.data, b"\x21\x00\x20\x00\x08\x00\x00\x00")
+
+		# Initiate Download Confirmation
+		index = 0x1000
+		subindex = 0x00
+		d = struct.pack("<BHB4s", 0x60, index, subindex, b"\x00\x00\x00\x00")
+		message = can.Message(arbitration_id = 0x58A, is_extended_id = False, data = d)
+		bus.send(message)
 	except AssertionError:
 		testcase.result.addFailure(testcase, sys.exc_info())
 	except:
@@ -144,7 +184,18 @@ def handle_segmented_download(testcase, bus):
 
 def handle_segmented_upload(testcase, bus):
 	try:
-		pass
+		# Initiate Upload Request
+		message = bus.recv(timeout = 1.0)
+		testcase.assertEqual(message.arbitration_id, 0x60A)
+		testcase.assertEqual(message.data, b"\x40\x00\x20\x00\x00\x00\x00\x00")
+
+		# Initiate Upload Confirmation
+		index = 0x1000
+		subindex = 0x00
+		data = 8
+		d = struct.pack("<BHBL", 0x41, index, subindex, data)
+		message = can.Message(arbitration_id = 0x58A, is_extended_id = False, data = d)
+		bus.send(message)
 	except AssertionError:
 		testcase.result.addFailure(testcase, sys.exc_info())
 	except:
